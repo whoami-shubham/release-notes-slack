@@ -25,4 +25,4 @@ jobs:
                   SLACK_AVATAR: https://raw.githubusercontent.com/whoami-shubham/release-notes-slack/main/github.png
               uses: Ilshidur/action-slack@2.0.2
               with:
-                  args: "*App Name ${{ github.event.release.name }} RELEASE - ${{ steps.date.outputs.date }}* \n\n RelaseLink: ${{github.event.release.html_url}} \n\n ${{ steps.slackBody.outputs.text }}"
+                  args: "*App Name ${{ github.event.release.name }} RELEASE - ${{ steps.date.outputs.date }}* \n\n RelaseLink: ${{github.event.release.html_url}} \n\n ${{ steps.slackBody.outputs.text }} \n\n\n\n"

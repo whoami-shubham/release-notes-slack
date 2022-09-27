@@ -5,9 +5,8 @@ on:
       tagName:
         description: 'Tag Name'
         default: ''
-        type: choice
-        options:
-          - ${GITHUB_REF#refs/*/}
+        type: number
+        required: true
           
 env:
   tagName: ${{ github.event.inputs.tagName }}

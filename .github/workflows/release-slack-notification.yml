@@ -1,28 +1,47 @@
 name: Push Release Slack Notificaion
 on:
-    release:
-        types: [published]
+  workflow_dispatch:
+    inputs:
+      tagName:
+        description: 'Tag Name'
+        default: ''
+        type: choice
+        options:
+          - ${GITHUB_REF#refs/*/}
+          
+env:
+  tagName: ${{ github.event.inputs.tagName }}
 
 jobs:
     slackNotification:
         name: Slack Notification
         runs-on: ubuntu-latest
         steps:
-            - name: Get current date
-              id: date
-              run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
+             - name: Create Tag
+               run: |
+                 git config user.name github-actions
+                 git config user.email github-actions@github.com
+                 git tag -a ${{ env.tagName }} -m "version ${{ env.tagName }}"
+                 git push --tags
+                 
+             - name: Get current date
+               id: date
+               run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
 
-            - name: Slack Markdown Converter
-              uses: LoveToKnow/slackify-markdown-action@v1.0.0
-              id: slackBody
-              with:
+             - name: Slack Markdown Converter
+               uses: LoveToKnow/slackify-markdown-action@v1.0.0
+               id: slackBody
+               with:
                   text: ${{ github.event.release.body }}
-            - name: Slack notification
-              env:
+             - name: Slack notification
+               env:
                   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
                   SLACK_USERNAME: Github Release Bot
                   SLACK_CHANNEL: release-note-private
                   SLACK_AVATAR: https://raw.githubusercontent.com/whoami-shubham/release-notes-slack/main/github.png
-              uses: Ilshidur/action-slack@2.0.2
-              with:
+               uses: Ilshidur/action-slack@2.0.2
+               with:
                   args: "*App Name ${{ github.event.release.name }} RELEASE - ${{ steps.date.outputs.date }}* \n\n RelaseLink: ${{github.event.release.html_url}} \n\n ${{ steps.slackBody.outputs.text }} "
+
+                 
+            

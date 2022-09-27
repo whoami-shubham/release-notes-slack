@@ -1,4 +1,4 @@
-name: Push Release Slack Notificaion
+name: Draft a Release
 on:
   workflow_dispatch:
     inputs:
@@ -13,7 +13,7 @@ env:
 
 jobs:
     slackNotification:
-        name: Slack Notification
+        name: Draft a Release
         runs-on: ubuntu-latest
         steps:
              - uses: actions/checkout@v3
@@ -30,21 +30,15 @@ jobs:
              - name: Get current date
                id: date
                run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
-
-             - name: Slack Markdown Converter
-               uses: LoveToKnow/slackify-markdown-action@v1.0.0
-               id: slackBody
+               
+             - name: Create release
+               uses: ncipollo/release-action@v1.10.0
+               id: 'create-release'
                with:
-                  text: ${{ github.event.release.body }}
-             - name: Slack notification
-               env:
-                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-                  SLACK_USERNAME: Github Release Bot
-                  SLACK_CHANNEL: release-note-private
-                  SLACK_AVATAR: https://raw.githubusercontent.com/whoami-shubham/release-notes-slack/main/github.png
-               uses: Ilshidur/action-slack@2.0.2
-               with:
-                  args: "*App Name ${{ github.event.release.name }} RELEASE - ${{ steps.date.outputs.date }}* \n\n RelaseLink: ${{github.event.release.html_url}} \n\n ${{ steps.slackBody.outputs.text }} "
+                  tag: ${{ env.tagName }}
+                  generateReleaseNotes: true
+                  draft: true
 
+             
                  
             

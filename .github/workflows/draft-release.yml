@@ -5,7 +5,7 @@ on:
       tagName:
         description: 'Tag Name'
         default: ''
-        type: number
+        type: string
         required: true
           
 env:

@@ -16,6 +16,10 @@ jobs:
         name: Slack Notification
         runs-on: ubuntu-latest
         steps:
+             - uses: actions/checkout@v3
+               with:
+                  ref: 'main'
+                  
              - name: Create Tag
                run: |
                  git config user.name github-actions
